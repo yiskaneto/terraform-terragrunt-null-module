@@ -1,4 +1,4 @@
-# Terragrunt - Terraform null-module
+# Terragrunt - Terraform Null Module
 
 The goal of this module is to allow [Terragrunt](https://terragrunt.gruntwork.io/) to place generated Terraform files from the Terragrunt's [generate](https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#generate) configuration block into the [Terragrunt cache directory](https://terragrunt.gruntwork.io/docs/features/caching/#clearing-the-terragrunt-cache), instead of the same directory where the [terragrunt.cl](https://terragrunt.gruntwork.io/docs/getting-started/configuration/#terragrunt-configuration-file) file lives as it happens when we use Terragrunt only to generate Terraform resources or data sources on the fly instead of using a fully-fleged Terraform module.
 
