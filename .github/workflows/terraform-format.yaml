@@ -1,0 +1,37 @@
+name: "Terraform Format"
+on:
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  terraform_fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      - uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Fmt
+        run: terraform fmt
+
+      - name: Commit and Push new changes
+        id: commit-and-push
+        run: |
+          echo SYNC_BRANCH=$(git config user.name github-actions && git config user.email github-actions@github.com && git add . && git commit -m "Saving new cahnges for ${{ github.head_ref }} branch" && git push) >> $GITHUB_OUTPUT
+
+      - name: Generate job summary
+        if: always()
+        run: |
+          cat > "$GITHUB_STEP_SUMMARY" << EOL
+
+          ### Branch Sync
+          ${{ steps.commit-and-push.outputs.SYNC_BRANCH }}
+
+          EOL

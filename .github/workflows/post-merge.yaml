@@ -1,0 +1,13 @@
+name: 'Post Merge'
+on:
+  pull_request:
+    branches: ["main"]
+    types: ["closed"]
+
+jobs:
+  Build:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo "The PR was successfully merged: Add more steps that need to take place after merging to the target branch."

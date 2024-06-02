@@ -1,0 +1,46 @@
+name: PR Title Checker
+on:
+  push:
+    branches:
+      - main
+  pull_request_target:
+    types:
+      - opened
+      - edited
+      - synchronize
+      - labeled
+      - unlabeled
+      - assigned
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR title
+        uses: thehanimo/pr-title-checker@v1.4.2
+        id: title_check
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          pass_on_octokit_error: false
+          configuration_path: .github/pr-title-checker-config.json #(optional. defaults to .github/pr-title-checker-config.json)
+
+      - name: Comment PR
+        uses: actions/github-script@v6
+        if: failure() # Only run if previous step failed.
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `### PR title needs formatting!
+
+              PR title should be like this:
+
+                PR title should be like this: '[feat|fix|chore|docs|ci][/|: ]ticket-XXX Brief summary'
+
+              For example:
+
+                fix/ticket-999 Reverting parameters from encryptSecret()
+              `
+            })

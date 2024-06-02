@@ -1,0 +1,36 @@
+name: PR Size Labeler
+
+on:
+  pull_request_target
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  size-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Labels
+        run: |
+          for size in XL XXL XS S M L ; do \
+            curl -s "https://api.github.com/repos/kubernetes/kubernetes/labels/size/$size" | \
+            jq '. | { "name": .name, "color": .color, "description": .description }' | curl -sXPOST -d @- -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/labels
+            if [[ $? -ne 0 ]] ; then echo "$size exists continuing..." ; continue ; fi
+          done
+
+      - name: size-label
+        uses: "pascalgn/size-label-action@v0.5.0" # https://github.com/marketplace/actions/assign-size-label
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}" # Default sizes are taken from https://github.com/kubernetes/kubernetes/labels?q=size
+        # but we can pass our own sizes:
+        # with:
+        #   sizes: >
+        #     {
+        #       "0": "XS",
+        #       "20": "S",
+        #       "50": "M",
+        #       "200": "L",
+        #       "800": "XL",
+        #       "2000": "XXL"
+        #     }

@@ -1,0 +1,20 @@
+{
+  "LABEL": {
+    "name": "PR title needs formatting",
+    "color": "cc6600",
+    "description": "Added by GitHub actions when the PR title does not comform with the naming convention"
+  },
+  "CHECKS": {
+    "regexp": "^((dev|feat|feature|bug|fix|chore|docs|documentation)(/|: )ticket-.*)",
+    "regexpFlags": "i",
+    "ignoreLabels": [
+      "dont-check-PRs-with-this-label",
+      "meta"
+    ]
+  },
+  "MESSAGES": {
+    "success": "All OK",
+    "failure": "PR title should be like this: '[feat|fix|chore|docs|ci][/|: ]ticket-XXX Brief summary'",
+    "notice": "TEST"
+  }
+}
